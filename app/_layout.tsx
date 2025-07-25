@@ -1,29 +1,45 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
+import OnboardingScreen from "@/components/OnboardingScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Slot } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
+import "react-native-reanimated";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
+  useEffect(() => {
+    console.log("Checking onboarding...");
+
+    AsyncStorage.removeItem("hasLaunched"); // TEMP for testing
+
+    const checkOnboarding = async () => {
+      const hasLaunched = await AsyncStorage.getItem("hasLaunched");
+      console.log("hasLaunched:", hasLaunched);
+
+      if (hasLaunched === null) {
+        await AsyncStorage.setItem("hasLaunched", "true");
+        setShowOnboarding(true);
+      } else {
+        setShowOnboarding(false);
+      }
+    };
+
+    checkOnboarding();
+  }, []);
+
+  if (showOnboarding === null) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+  if (showOnboarding) {
+    // Pass a navigation prop to OnboardingScreen
+    return <OnboardingScreen />;
+  }
+
+  return <Slot />; // Renders app/index.tsx or other pages
 }
