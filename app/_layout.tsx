@@ -1,35 +1,24 @@
-// RootLayout.tsx
 import OnboardingScreen from "@/components/OnboardingScreen";
+import { ExpenseProvider } from "@/contexts/ExpenseContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import "react-native-reanimated";
 
 export default function RootLayout() {
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
-    AsyncStorage.removeItem("hasLaunched");
-
+    // 🛠️ Dev only
+    // AsyncStorage.removeItem("hasLaunched");
+    // 🛠️ Dev only
     const checkOnboarding = async () => {
       const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-      console.log("✔️ hasLaunched from storage:", hasLaunched);
-
-      if (hasLaunched === null) {
-        setShowOnboarding(true);
-      } else {
-        setShowOnboarding(false);
-      }
+      setShowOnboarding(hasLaunched === null);
     };
 
     checkOnboarding();
   }, []);
-
-  const finishOnboarding = async () => {
-    await AsyncStorage.setItem("hasLaunched", "true");
-    setShowOnboarding(false);
-  };
 
   if (showOnboarding === null) {
     return (
@@ -39,9 +28,18 @@ export default function RootLayout() {
     );
   }
 
-  if (showOnboarding) {
-    return <OnboardingScreen onDone={finishOnboarding} />;
-  }
-
-  return <Slot />;
+  return (
+    <ExpenseProvider>
+      {showOnboarding ? (
+        <OnboardingScreen
+          onDone={async () => {
+            await AsyncStorage.setItem("hasLaunched", "true");
+            setShowOnboarding(false);
+          }}
+        />
+      ) : (
+        <Slot />
+      )}
+    </ExpenseProvider>
+  );
 }
