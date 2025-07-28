@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
   Dimensions,
@@ -32,22 +31,22 @@ type SlideItem = {
 const slides: SlideItem[] = [
   {
     key: 1,
-    title: "Best Digital Solution",
-    text: "Description.\nSay something cool",
+    title: "Minimal & Clear",
+    text: "Know where your money goes.\nevery peso,dollar, every day",
     image: require("../assets/images/undraw_add-to-cart_c8f2.png"),
     backgroundColor: "#59b2ab",
   },
   {
     key: 2,
     title: "Achieve Your Goals",
-    text: "Other cool stuff",
+    text: "Set and track your financial goals.",
     image: require("../assets/images/undraw_online-banking_l9sn.png"),
     backgroundColor: "#59b2ab",
   },
   {
     key: 3,
-    title: "Cool Stuff",
-    text: "I'm already out of descriptions\n\nLorem ipsum bla bla bla",
+    title: "Empowering",
+    text: "Take charge of your spending \nBuild habits that build your future.",
     image: require("../assets/images/undraw_pay-with-credit-card_77g6.png"),
     backgroundColor: "#59b2ab",
   },
@@ -68,7 +67,11 @@ const Slide: React.FC<{ item: SlideItem }> = ({ item }) => {
   );
 };
 
-const OnboardingScreen: React.FC = () => {
+type OnboardingScreenProps = {
+  onDone: () => void;
+};
+
+function OnboardingScreen({ onDone }: OnboardingScreenProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const ref = useRef<FlatList<SlideItem>>(null);
 
@@ -123,7 +126,7 @@ const OnboardingScreen: React.FC = () => {
                 zIndex: 999,
                 alignItems: "center",
               }}
-              onPress={() => router.replace("/(tabs)")} // replace with your route (e.g. /(tabs))
+              onPress={onDone}
             >
               <Text
                 style={{
@@ -170,7 +173,7 @@ const OnboardingScreen: React.FC = () => {
       <Footer />
     </SafeAreaView>
   );
-};
+}
 
 export default OnboardingScreen;
 

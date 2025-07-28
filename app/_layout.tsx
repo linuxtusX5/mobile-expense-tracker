@@ -1,3 +1,4 @@
+// RootLayout.tsx
 import OnboardingScreen from "@/components/OnboardingScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
@@ -9,16 +10,13 @@ export default function RootLayout() {
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
 
   useEffect(() => {
-    console.log("Checking onboarding...");
-
-    AsyncStorage.removeItem("hasLaunched"); // TEMP for testing
+    AsyncStorage.removeItem("hasLaunched");
 
     const checkOnboarding = async () => {
       const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-      console.log("hasLaunched:", hasLaunched);
+      console.log("✔️ hasLaunched from storage:", hasLaunched);
 
       if (hasLaunched === null) {
-        await AsyncStorage.setItem("hasLaunched", "true");
         setShowOnboarding(true);
       } else {
         setShowOnboarding(false);
@@ -27,6 +25,11 @@ export default function RootLayout() {
 
     checkOnboarding();
   }, []);
+
+  const finishOnboarding = async () => {
+    await AsyncStorage.setItem("hasLaunched", "true");
+    setShowOnboarding(false);
+  };
 
   if (showOnboarding === null) {
     return (
@@ -37,9 +40,8 @@ export default function RootLayout() {
   }
 
   if (showOnboarding) {
-    // Pass a navigation prop to OnboardingScreen
-    return <OnboardingScreen />;
+    return <OnboardingScreen onDone={finishOnboarding} />;
   }
 
-  return <Slot />; // Renders app/index.tsx or other pages
+  return <Slot />;
 }
