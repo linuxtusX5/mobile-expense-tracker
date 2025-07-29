@@ -67,6 +67,7 @@ export default function AddExpenseScreen() {
           <Text style={styles.label}>Amount</Text>
           <View style={styles.inputContainer}>
             <DollarSign size={20} color="#6B7280" />
+            {/* <PhilippinePeso size={20} color="#6B7280" /> */}
             <TextInput
               style={styles.textInput}
               placeholder="0.00"
