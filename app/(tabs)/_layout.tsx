@@ -1,5 +1,10 @@
 import { Tabs } from "expo-router";
-import { House as Home } from "lucide-react-native";
+import {
+  House as Home,
+  ChartPie as PieChart,
+  Plus,
+  Settings,
+} from "lucide-react-native";
 
 export default function TabLayout() {
   return (
@@ -29,7 +34,7 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => <Home size={size} color={color} />,
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="add"
         options={{
           title: "Add",
@@ -53,7 +58,7 @@ export default function TabLayout() {
             <Settings size={size} color={color} />
           ),
         }}
-      /> */}
+      />
     </Tabs>
   );
 }
