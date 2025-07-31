@@ -1,4 +1,5 @@
 import { CategoryChart } from "@/components/CategoryChart";
+import { MonthlyTrend } from "@/components/MonthlyTrend";
 import { useExpenseContext } from "@/contexts/ExpenseContext";
 import {
   Calendar,
@@ -6,9 +7,8 @@ import {
   TrendingUp,
 } from "lucide-react-native";
 import React from "react";
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-const { width } = Dimensions.get("window");
 
 export default function AnalyticsScreen() {
   const { expenses, getMonthlyTotal, getCategoryTotals, getMonthlyExpenses } =
@@ -65,7 +65,7 @@ export default function AnalyticsScreen() {
             <TrendingUp size={20} color="#6B7280" />
             <Text style={styles.sectionTitle}>Monthly Trend</Text>
           </View>
-          {/* <MonthlyTrend data={monthlyExpenses} /> */}
+          <MonthlyTrend data={monthlyExpenses} />
         </View>
 
         {/* Category Details */}
