@@ -20,7 +20,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { expenses, getMonthlyTotal, getTodayTotal, getWeeklyTotal } =
+  const { expenses, loading, getMonthlyTotal, getTodayTotal, getWeeklyTotal } =
     useExpenseContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -35,6 +35,20 @@ export default function HomeScreen() {
   });
 
   const categories = Array.from(new Set(expenses.map((e) => e.category)));
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Expense Tracker</Text>
+          <Text style={styles.subtitle}>Track your spending</Text>
+        </View>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading expenses...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -251,5 +265,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#9CA3AF",
     textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#6B7280",
   },
 });

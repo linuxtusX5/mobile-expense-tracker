@@ -1,20 +1,25 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { expensesAPI, ExpenseData } from "@/services/api";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface Expense {
-  id: string;
+  _id: string;
   amount: number;
   description: string;
   category: string;
   date: Date;
+  userId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface ExpenseContextType {
   expenses: Expense[];
-  addExpense: (expense: Omit<Expense, "id">) => Promise<void>;
+  loading: boolean;
+  addExpense: (expense: ExpenseData) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
-  updateExpense: (id: string, expense: Partial<Expense>) => Promise<void>;
+  updateExpense: (id: string, expense: Partial<ExpenseData>) => Promise<void>;
   clearAllExpenses: () => Promise<void>;
+  refreshExpenses: () => Promise<void>;
   getTodayTotal: () => number;
   getWeeklyTotal: () => number;
   getMonthlyTotal: () => number;
@@ -24,29 +29,24 @@ interface ExpenseContextType {
 
 const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 
-const STORAGE_KEY = "@expense_tracker_data";
-
 export function ExpenseProvider({ children }: { children: React.ReactNode }) {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load expenses from storage on app start
+  // Load expenses from API on app start
   useEffect(() => {
-    loadExpenses();
+    refreshExpenses();
   }, []);
 
-  const loadExpenses = async () => {
+  const refreshExpenses = async () => {
     try {
-      const storedExpenses = await AsyncStorage.getItem(STORAGE_KEY);
-      if (storedExpenses) {
-        const parsedExpenses = JSON.parse(storedExpenses).map(
-          (expense: any) => ({
-            ...expense,
-            date: new Date(expense.date),
-          })
-        );
-        setExpenses(parsedExpenses);
-      }
+      setLoading(true);
+      const response = await expensesAPI.getExpenses({ limit: 100 });
+      const expensesWithDates = response.expenses.map((expense: any) => ({
+        ...expense,
+        date: new Date(expense.date),
+      }));
+      setExpenses(expensesWithDates);
     } catch (error) {
       console.error("Error loading expenses:", error);
     } finally {
@@ -54,42 +54,54 @@ export function ExpenseProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const saveExpenses = async (newExpenses: Expense[]) => {
+  const addExpense = async (expenseData: ExpenseData) => {
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newExpenses));
+      const response = await expensesAPI.createExpense(expenseData);
+      const newExpense = {
+        ...response.expense,
+        date: new Date(response.expense.date),
+      };
+      setExpenses([newExpense, ...expenses]);
     } catch (error) {
-      console.error("Error saving expenses:", error);
+      console.error("Error adding expense:", error);
+      throw error;
     }
   };
 
-  const addExpense = async (expenseData: Omit<Expense, "id">) => {
-    const newExpense: Expense = {
-      ...expenseData,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-    };
-
-    const updatedExpenses = [newExpense, ...expenses];
-    setExpenses(updatedExpenses);
-    await saveExpenses(updatedExpenses);
-  };
-
   const deleteExpense = async (id: string) => {
-    const updatedExpenses = expenses.filter((expense) => expense.id !== id);
-    setExpenses(updatedExpenses);
-    await saveExpenses(updatedExpenses);
+    try {
+      await expensesAPI.deleteExpense(id);
+      setExpenses(expenses.filter((expense) => expense._id !== id));
+    } catch (error) {
+      console.error("Error deleting expense:", error);
+      throw error;
+    }
   };
 
-  const updateExpense = async (id: string, updates: Partial<Expense>) => {
-    const updatedExpenses = expenses.map((expense) =>
-      expense.id === id ? { ...expense, ...updates } : expense
-    );
-    setExpenses(updatedExpenses);
-    await saveExpenses(updatedExpenses);
+  const updateExpense = async (id: string, updates: Partial<ExpenseData>) => {
+    try {
+      const response = await expensesAPI.updateExpense(id, updates);
+      const updatedExpense = {
+        ...response.expense,
+        date: new Date(response.expense.date),
+      };
+      setExpenses(expenses.map((expense) =>
+        expense._id === id ? updatedExpense : expense
+      ));
+    } catch (error) {
+      console.error("Error updating expense:", error);
+      throw error;
+    }
   };
 
   const clearAllExpenses = async () => {
-    setExpenses([]);
-    await AsyncStorage.removeItem(STORAGE_KEY);
+    try {
+      // Note: This would require a backend endpoint to delete all user expenses
+      // For now, we'll just clear the local state
+      setExpenses([]);
+    } catch (error) {
+      console.error("Error clearing expenses:", error);
+    }
   };
 
   const getTodayTotal = () => {
@@ -149,20 +161,18 @@ export function ExpenseProvider({ children }: { children: React.ReactNode }) {
     expenses: expenses.sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     ),
+    loading,
     addExpense,
     deleteExpense,
     updateExpense,
     clearAllExpenses,
+    refreshExpenses,
     getTodayTotal,
     getWeeklyTotal,
     getMonthlyTotal,
     getCategoryTotals,
     getMonthlyExpenses,
   };
-
-  if (loading) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <ExpenseContext.Provider value={value}>{children}</ExpenseContext.Provider>
