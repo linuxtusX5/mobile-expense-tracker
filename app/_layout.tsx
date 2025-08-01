@@ -7,7 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View } from "react-native"
+import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 
 function AppContent() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -58,6 +59,7 @@ function AppContent() {
 }
 
 export default function RootLayout() {
+  useFrameworkReady();
   return (
     <AuthProvider>
       <StatusBar style="auto" />
