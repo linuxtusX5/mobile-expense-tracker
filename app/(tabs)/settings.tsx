@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useExpenseContext } from "@/contexts/ExpenseContext";
 import {
   ChevronRight,
@@ -5,6 +6,7 @@ import {
   Download,
   FileText,
   CircleHelp as HelpCircle,
+  LogOut,
   Trash2,
 } from "lucide-react-native";
 import React from "react";
@@ -20,6 +22,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
   const { expenses, clearAllExpenses } = useExpenseContext();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: logout,
+      },
+    ]);
+  };
 
   const handleClearData = () => {
     Alert.alert(
@@ -146,6 +160,12 @@ export default function SettingsScreen() {
             </View>
           </View>
         </View>
+        <View style={styles.section}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleLogout}>
+            <LogOut size={20} color="#EF4444" />
+            <Text style={styles.actionButtonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Footer */}
         <View style={styles.footer}>
@@ -159,6 +179,21 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    gap: 12,
+  },
+  actionButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#EF4444",
+  },
   container: {
     flex: 1,
     backgroundColor: "#F9FAFB",

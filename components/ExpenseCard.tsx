@@ -29,7 +29,7 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => deleteExpense(expense.id),
+          onPress: () => deleteExpense(expense._id),
         },
       ]
     );
