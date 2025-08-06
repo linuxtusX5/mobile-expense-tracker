@@ -154,7 +154,7 @@ export default function HomeScreen() {
             <FlatList
               data={filteredExpenses.slice(0, 10)}
               renderItem={({ item }) => <ExpenseCard expense={item} />}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item._id.toString()}
               scrollEnabled={false}
             />
           )}

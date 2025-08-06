@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: "Login" }],
+          routes: [{ name: "../components/AuthScreen.tsx" }],
         })
       );
     } catch (error) {

@@ -1,7 +1,7 @@
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL_API;
 
 // Create axios instance
 const api = axios.create({
@@ -11,7 +11,7 @@ const api = axios.create({
 
 // Add auth token to requests
 api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem('authToken');
+  const token = await AsyncStorage.getItem("authToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,8 +23,8 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem("authToken");
+      await AsyncStorage.removeItem("user");
     }
     return Promise.reject(error);
   }
@@ -57,30 +57,34 @@ export interface ExpenseData {
 // Auth API
 export const authAPI = {
   login: async (data: LoginData) => {
-    const response = await api.post('/auth/login', data);
+    const response = await api.post("/auth/login", data);
     return response.data;
   },
 
   register: async (data: RegisterData) => {
-    const response = await api.post('/auth/register', data);
+    const response = await api.post("/auth/register", data);
     return response.data;
   },
 
   getMe: async () => {
-    const response = await api.get('/auth/me');
+    const response = await api.get("/auth/me");
     return response.data;
   },
 };
 
 // Expenses API
 export const expensesAPI = {
-  getExpenses: async (params?: { category?: string; page?: number; limit?: number }) => {
-    const response = await api.get('/expenses', { params });
+  getExpenses: async (params?: {
+    category?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const response = await api.get("/expenses", { params });
     return response.data;
   },
 
   createExpense: async (data: ExpenseData) => {
-    const response = await api.post('/expenses', data);
+    const response = await api.post("/expenses", data);
     return response.data;
   },
 
@@ -95,7 +99,7 @@ export const expensesAPI = {
   },
 
   getAnalytics: async () => {
-    const response = await api.get('/expenses/analytics');
+    const response = await api.get("/expenses/analytics");
     return response.data;
   },
 };
@@ -103,12 +107,12 @@ export const expensesAPI = {
 // Categories API
 export const categoriesAPI = {
   getCategories: async () => {
-    const response = await api.get('/categories');
+    const response = await api.get("/categories");
     return response.data;
   },
 
   initCategories: async () => {
-    const response = await api.post('/categories/init');
+    const response = await api.post("/categories/init");
     return response.data;
   },
 };

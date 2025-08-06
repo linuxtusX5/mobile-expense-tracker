@@ -62,6 +62,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "nodemon": "^3.1.10",
+    "react-native-dotenv": "^3.4.11",
     "typescript": "~5.8.3"
   },
   "private": true
