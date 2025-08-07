@@ -21,7 +21,6 @@ export default function AddExpenseScreen() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const currency = useCurrencyStore((state) => state.currency);
-  // const symbol = currency === "USD" ? "$" : "₱";
 
   const handleAddExpense = async () => {
     if (!amount || !description || !selectedCategory) {

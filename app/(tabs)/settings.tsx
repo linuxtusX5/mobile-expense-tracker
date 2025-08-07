@@ -9,6 +9,7 @@ import {
   FileText,
   CircleHelp as HelpCircle,
   LogOut,
+  PhilippinePeso,
   Trash2,
 } from "lucide-react-native";
 import {
@@ -117,7 +118,9 @@ export default function SettingsScreen() {
             {currency === "USD" ? (
               <DollarSign size={20} color="#6B7280" />
             ) : (
-              <Text style={{ fontSize: 20, color: "#6B7280" }}>₱</Text>
+              <Text style={{ fontSize: 20, color: "#6B7280" }}>
+                <PhilippinePeso size={20} color="#6B7280" />
+              </Text>
             )}
           </View>
         </View>
