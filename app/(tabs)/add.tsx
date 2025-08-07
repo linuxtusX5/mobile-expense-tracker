@@ -1,6 +1,7 @@
 import { useExpenseContext } from "@/contexts/ExpenseContext";
 import { CATEGORIES } from "@/data/Categories";
-import { DollarSign, FileText, Tag } from "lucide-react-native";
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
+import { DollarSign, FileText, PhilippinePeso, Tag } from "lucide-react-native";
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -19,10 +20,11 @@ export default function AddExpenseScreen() {
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const currency = useCurrencyStore((state) => state.currency);
+  // const symbol = currency === "USD" ? "$" : "₱";
 
   const handleAddExpense = async () => {
     if (!amount || !description || !selectedCategory) {
-      // Alert.alert("Error", "Please fill in all fields");
       Toast.show({
         type: "error",
         text1: "Error",
@@ -34,7 +36,6 @@ export default function AddExpenseScreen() {
 
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      // Alert.alert("Error", "Please enter a valid amount");
       Toast.show({
         type: "error",
         text1: "Error",
@@ -57,8 +58,6 @@ export default function AddExpenseScreen() {
       setAmount("");
       setDescription("");
       setSelectedCategory("");
-
-      // Alert.alert("Success", "Expense added successfully!");
       Toast.show({
         type: "success",
         text1: "Success",
@@ -66,7 +65,6 @@ export default function AddExpenseScreen() {
         position: "top",
       });
     } catch {
-      // Alert.alert("Error", "Failed to add expense");
       Toast.show({
         type: "error",
         text1: "Error",
@@ -90,8 +88,16 @@ export default function AddExpenseScreen() {
         <View style={styles.inputSection}>
           <Text style={styles.label}>Amount</Text>
           <View style={styles.inputContainer}>
-            <DollarSign size={20} color="#6B7280" />
+            {/* <DollarSign size={20} color="#6B7280" /> */}
             {/* <PhilippinePeso size={20} color="#6B7280" /> */}
+
+            {currency === "USD" ? (
+              <DollarSign size={20} color="#6B7280" />
+            ) : (
+              <Text style={{ fontSize: 20, color: "#6B7280" }}>
+                <PhilippinePeso size={20} color="#6B7280" />
+              </Text>
+            )}
             <TextInput
               style={styles.textInput}
               placeholder="0.00"

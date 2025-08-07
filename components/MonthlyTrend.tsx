@@ -1,3 +1,4 @@
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
@@ -6,6 +7,9 @@ interface MonthlyTrendProps {
 }
 
 export function MonthlyTrend({ data }: MonthlyTrendProps) {
+  const currency = useCurrencyStore((state) => state.currency);
+  const symbol = currency === "USD" ? "$" : "₱";
+
   if (Object.keys(data).length === 0) {
     return (
       <View style={styles.emptyState}>
@@ -38,7 +42,10 @@ export function MonthlyTrend({ data }: MonthlyTrendProps) {
 
             return (
               <View key={month} style={styles.barContainer}>
-                <Text style={styles.amount}>${amount.toFixed(0)}</Text>
+                <Text style={styles.amount}>
+                  {symbol}
+                  {amount.toFixed(0)}
+                </Text>
                 <View style={styles.barWrapper}>
                   <View style={[styles.bar, { height }]} />
                 </View>

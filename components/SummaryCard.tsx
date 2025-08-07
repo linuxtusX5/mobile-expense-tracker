@@ -1,3 +1,4 @@
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -9,13 +10,18 @@ interface SummaryCardProps {
 }
 
 export function SummaryCard({ title, amount, icon, color }: SummaryCardProps) {
+  const currency = useCurrencyStore((state) => state.currency);
+  const symbol = currency === "USD" ? "$" : "₱";
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         {icon}
         <Text style={styles.title}>{title}</Text>
       </View>
-      <Text style={[styles.amount, { color }]}>${amount.toFixed(2)}</Text>
+      <Text style={[styles.amount, { color }]}>
+        {symbol}
+        {amount.toFixed(2)}
+      </Text>
     </View>
   );
 }

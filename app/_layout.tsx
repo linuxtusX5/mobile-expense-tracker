@@ -4,6 +4,7 @@ import OnboardingScreen from "@/components/OnboardingScreen";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ExpenseProvider } from "@/contexts/ExpenseContext";
 import { useFrameworkReady } from "@/hooks/useFrameworkReady";
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
 import { toastConfig } from "@/toastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
@@ -15,6 +16,11 @@ import Toast from "react-native-toast-message";
 function AppContent() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const loadCurrency = useCurrencyStore((state) => state.loadCurrency);
+
+  useEffect(() => {
+    loadCurrency();
+  }, []);
 
   useEffect(() => {
     const checkOnboarding = async () => {

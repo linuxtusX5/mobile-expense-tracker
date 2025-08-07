@@ -1,5 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useExpenseContext } from "@/contexts/ExpenseContext";
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
+import { Picker } from "@react-native-picker/picker";
 import {
   ChevronRight,
   DollarSign,
@@ -9,7 +11,6 @@ import {
   LogOut,
   Trash2,
 } from "lucide-react-native";
-import React from "react";
 import {
   Alert,
   ScrollView,
@@ -23,6 +24,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function SettingsScreen() {
   const { expenses, clearAllExpenses } = useExpenseContext();
   const { user, logout } = useAuth();
+  const currency = useCurrencyStore((state) => state.currency);
+  const setCurrency = useCurrencyStore((state) => state.setCurrency);
+
+  const handleCurrencyChange = (selectedCurrency: string) => {
+    setCurrency(selectedCurrency);
+  };
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -71,6 +78,21 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Currency Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Currency</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={currency}
+              onValueChange={handleCurrencyChange}
+              style={{ margin: 10 }}
+            >
+              <Picker.Item label="US Dollar ($)" value="USD" />
+              <Picker.Item label="Philippine Peso (₱)" value="PHP" />
+            </Picker>
+          </View>
+        </View>
+
         {/* Statistics Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Statistics</Text>
@@ -86,9 +108,17 @@ export default function SettingsScreen() {
           <View style={styles.statRow}>
             <View style={styles.statInfo}>
               <Text style={styles.statLabel}>Total Amount</Text>
-              <Text style={styles.statValue}>${totalAmount.toFixed(2)}</Text>
+              {/* <Text style={styles.statValue}>${totalAmount.toFixed(2)}</Text> */}
+              <Text style={styles.statValue}>
+                {currency === "USD" ? "$" : "₱"}
+                {totalAmount.toFixed(2)}
+              </Text>
             </View>
-            <DollarSign size={20} color="#6B7280" />
+            {currency === "USD" ? (
+              <DollarSign size={20} color="#6B7280" />
+            ) : (
+              <Text style={{ fontSize: 20, color: "#6B7280" }}>₱</Text>
+            )}
           </View>
         </View>
 
@@ -179,6 +209,18 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginTop: 10,
+    overflow: "hidden",
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+  },
+
   actionButton: {
     flexDirection: "row",
     alignItems: "center",

@@ -1,18 +1,20 @@
 import { CategoryChart } from "@/components/CategoryChart";
 import { MonthlyTrend } from "@/components/MonthlyTrend";
 import { useExpenseContext } from "@/contexts/ExpenseContext";
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
 import {
   Calendar,
   ChartPie as PieChartIcon,
   TrendingUp,
 } from "lucide-react-native";
-import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AnalyticsScreen() {
   const { expenses, getMonthlyTotal, getCategoryTotals, getMonthlyExpenses } =
     useExpenseContext();
+  const currency = useCurrencyStore((state) => state.currency);
+  const symbol = currency === "USD" ? "$" : "₱";
 
   const categoryTotals = getCategoryTotals();
   const monthlyExpenses = getMonthlyExpenses();
@@ -36,7 +38,11 @@ export default function AnalyticsScreen() {
               <TrendingUp size={20} color="#3B82F6" />
               <Text style={styles.statTitle}>Total Spent</Text>
             </View>
-            <Text style={styles.statAmount}>${totalExpenses.toFixed(2)}</Text>
+            {/* <Text style={styles.statAmount}>${totalExpenses.toFixed(2)}</Text> */}
+            <Text style={styles.statAmount}>
+              {symbol}
+              {totalExpenses.toFixed(2)}
+            </Text>
           </View>
 
           <View style={styles.statCard}>
@@ -45,7 +51,8 @@ export default function AnalyticsScreen() {
               <Text style={styles.statTitle}>This Month</Text>
             </View>
             <Text style={styles.statAmount}>
-              ${getMonthlyTotal().toFixed(2)}
+              {symbol}
+              {totalExpenses.toFixed(2)}
             </Text>
           </View>
         </View>
@@ -84,7 +91,10 @@ export default function AnalyticsScreen() {
                     {percentage.toFixed(1)}%
                   </Text>
                 </View>
-                <Text style={styles.categoryAmount}>${total.toFixed(2)}</Text>
+                <Text style={styles.categoryAmount}>
+                  {symbol}
+                  {total.toFixed(2)}
+                </Text>
               </View>
             );
           })}
