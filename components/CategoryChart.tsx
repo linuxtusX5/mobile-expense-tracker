@@ -1,3 +1,4 @@
+import { useCurrencyStore } from "@/stores/useCurrencyStore";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -17,6 +18,8 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export function CategoryChart({ data }: CategoryChartProps) {
   const total = Object.values(data).reduce((sum, value) => sum + value, 0);
+  const currency = useCurrencyStore((state) => state.currency);
+  const symbol = currency === "USD" ? "$" : "₱";
 
   if (total === 0) {
     return (
@@ -56,7 +59,10 @@ export function CategoryChart({ data }: CategoryChartProps) {
                   ]}
                 />
               </View>
-              <Text style={styles.amount}>${amount.toFixed(2)}</Text>
+              <Text style={styles.amount}>
+                {symbol}
+                {amount.toFixed(2)}
+              </Text>
             </View>
           );
         })}
