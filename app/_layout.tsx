@@ -1,14 +1,16 @@
 // app/_layout.tsx
-import OnboardingScreen from "@/components/OnboardingScreen";
 import AuthScreen from "@/components/AuthScreen";
+import OnboardingScreen from "@/components/OnboardingScreen";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ExpenseProvider } from "@/contexts/ExpenseContext";
+import { useFrameworkReady } from "@/hooks/useFrameworkReady";
+import { toastConfig } from "@/toastConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native"
-import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { ActivityIndicator, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 function AppContent() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -54,6 +56,7 @@ function AppContent() {
   return (
     <ExpenseProvider>
       <Slot />
+      <Toast config={toastConfig} />
     </ExpenseProvider>
   );
 }

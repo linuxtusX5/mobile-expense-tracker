@@ -3,6 +3,8 @@ import { Trash2 } from "lucide-react-native";
 import React from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import Toast from "react-native-toast-message";
+
 interface ExpenseCardProps {
   expense: Expense;
 }
@@ -29,7 +31,15 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => deleteExpense(expense._id),
+          onPress: () => {
+            deleteExpense(expense._id);
+            Toast.show({
+              type: "success",
+              text1: "Success",
+              text2: "deleted expense successfully!",
+              position: "top",
+            });
+          },
         },
       ]
     );

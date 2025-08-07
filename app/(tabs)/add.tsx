@@ -3,7 +3,6 @@ import { CATEGORIES } from "@/data/Categories";
 import { DollarSign, FileText, Tag } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function AddExpenseScreen() {
   const { addExpense } = useExpenseContext();
@@ -22,13 +22,25 @@ export default function AddExpenseScreen() {
 
   const handleAddExpense = async () => {
     if (!amount || !description || !selectedCategory) {
-      Alert.alert("Error", "Please fill in all fields");
+      // Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in all fields",
+        position: "top",
+      });
       return;
     }
 
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      Alert.alert("Error", "Please enter a valid amount");
+      // Alert.alert("Error", "Please enter a valid amount");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter a valid amount",
+        position: "top",
+      });
       return;
     }
 
@@ -46,9 +58,21 @@ export default function AddExpenseScreen() {
       setDescription("");
       setSelectedCategory("");
 
-      Alert.alert("Success", "Expense added successfully!");
+      // Alert.alert("Success", "Expense added successfully!");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Expense added successfully!",
+        position: "top",
+      });
     } catch {
-      Alert.alert("Error", "Failed to add expense");
+      // Alert.alert("Error", "Failed to add expense");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to add expense",
+        position: "top",
+      });
     } finally {
       setLoading(false);
     }
