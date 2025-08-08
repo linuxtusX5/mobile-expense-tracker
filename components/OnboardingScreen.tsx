@@ -179,7 +179,7 @@ export default OnboardingScreen;
 
 const styles = StyleSheet.create({
   title: {
-    color: "#F50057",
+    color: "#3B82F6",
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",

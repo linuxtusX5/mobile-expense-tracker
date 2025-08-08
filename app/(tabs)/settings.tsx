@@ -213,11 +213,12 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   pickerWrapper: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    marginTop: 10,
     overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
   picker: {
     height: 50,

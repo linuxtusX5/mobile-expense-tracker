@@ -1,3 +1,12 @@
+# Expense Tracker
+
+<img src="https://github.com/user-attachments/assets/d7a7a7b0-f85b-4739-8fac-1aed2d63c0a2" width="300" />
+<img src="https://github.com/user-attachments/assets/a1ba3944-fe76-4d3c-a045-3ca23920e571" width="300" />
+<img src="https://github.com/user-attachments/assets/f0f72566-0b5d-49f8-b551-f443e7fab664" width="300" />
+<img src="https://github.com/user-attachments/assets/7d321be4-7db4-448f-b2b0-4ecac6885e15" width="300" />
+<img src="https://github.com/user-attachments/assets/042f29d2-5895-4283-a0eb-351483231de7" width="300" />
+<img src="https://github.com/user-attachments/assets/045474b8-1493-4de2-ad62-4d495a545966" width="300" />
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
