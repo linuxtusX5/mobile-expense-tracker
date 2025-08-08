@@ -1,8 +1,11 @@
-import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { signInWithGoogle } from "@/services/api";
+import { useGoogleAuth } from "@/signInWithGoogle";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react-native";
+import React, { useState } from "react";
 import {
   Alert,
+  Button,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,34 +14,36 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthScreen() {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
+  const { promptAsync, request } = useGoogleAuth();
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
+    password: "",
   });
 
   const handleSubmit = async () => {
     if (!formData.email || !formData.password) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert("Error", "Please fill in all required fields");
       return;
     }
 
     if (!isLogin && !formData.name) {
-      Alert.alert('Error', 'Please enter your name');
+      Alert.alert("Error", "Please enter your name");
       return;
     }
 
     if (formData.password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      Alert.alert("Error", "Password must be at least 6 characters long");
       return;
     }
 
@@ -57,7 +62,7 @@ export default function AuthScreen() {
         });
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Authentication failed');
+      Alert.alert("Error", error.message || "Authentication failed");
     } finally {
       setLoading(false);
     }
@@ -65,24 +70,36 @@ export default function AuthScreen() {
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
-    setFormData({ name: '', email: '', password: '' });
+    setFormData({ name: "", email: "", password: "" });
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const user = await signInWithGoogle();
+      const token = await user.getIdToken();
+
+      // OPTIONAL: Send token to your backend
+      console.log("Firebase Google Token:", token);
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <Text style={styles.title}>
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+              {isLogin ? "Welcome Back" : "Create Account"}
             </Text>
             <Text style={styles.subtitle}>
               {isLogin
-                ? 'Sign in to continue tracking your expenses'
-                : 'Join us to start managing your finances'}
+                ? "Sign in to continue tracking your expenses"
+                : "Join us to start managing your finances"}
             </Text>
           </View>
 
@@ -145,26 +162,33 @@ export default function AuthScreen() {
             </View>
 
             <TouchableOpacity
-              style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+              style={[
+                styles.submitButton,
+                loading && styles.submitButtonDisabled,
+              ]}
               onPress={handleSubmit}
               disabled={loading}
             >
               <Text style={styles.submitButtonText}>
                 {loading
                   ? isLogin
-                    ? 'Signing In...'
-                    : 'Creating Account...'
+                    ? "Signing In..."
+                    : "Creating Account..."
                   : isLogin
-                  ? 'Sign In'
-                  : 'Create Account'}
+                  ? "Sign In"
+                  : "Create Account"}
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={styles.toggleButton} onPress={toggleMode}>
+              <Button
+                title="Sign in with Google"
+                disabled={!request}
+                onPress={() => promptAsync()}
+              />
               <Text style={styles.toggleButtonText}>
                 {isLogin
                   ? "Don't have an account? Sign Up"
-                  : 'Already have an account? Sign In'}
+                  : "Already have an account? Sign In"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -177,42 +201,42 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
   },
   keyboardView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 40,
   },
   title: {
     fontSize: 32,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: "700",
+    color: "#111827",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
-    textAlign: 'center',
+    color: "#6B7280",
+    textAlign: "center",
     lineHeight: 24,
   },
   form: {
     gap: 20,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: "#E5E7EB",
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 12,
@@ -220,33 +244,33 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#111827',
+    color: "#111827",
   },
   eyeButton: {
     padding: 4,
   },
   submitButton: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: "#3B82F6",
     borderRadius: 12,
     paddingVertical: 16,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   submitButtonDisabled: {
-    backgroundColor: '#9CA3AF',
+    backgroundColor: "#9CA3AF",
   },
   submitButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   toggleButton: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 16,
   },
   toggleButtonText: {
-    color: '#3B82F6',
+    color: "#3B82F6",
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

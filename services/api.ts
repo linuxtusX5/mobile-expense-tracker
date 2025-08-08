@@ -1,5 +1,7 @@
+import { auth, googleProvider } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { signInWithPopup } from "firebase/auth";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL_API;
 
@@ -53,6 +55,12 @@ export interface ExpenseData {
   category: string;
   date: Date;
 }
+
+// Login with Google
+export const signInWithGoogle = async () => {
+  const result = await signInWithPopup(auth, googleProvider);
+  return result.user;
+};
 
 // Auth API
 export const authAPI = {
