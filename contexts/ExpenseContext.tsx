@@ -1,4 +1,4 @@
-import { expensesAPI, ExpenseData } from "@/services/api";
+import { ExpenseData, expensesAPI } from "@/services/api";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface Expense {
@@ -85,9 +85,11 @@ export function ExpenseProvider({ children }: { children: React.ReactNode }) {
         ...response.expense,
         date: new Date(response.expense.date),
       };
-      setExpenses(expenses.map((expense) =>
-        expense._id === id ? updatedExpense : expense
-      ));
+      setExpenses(
+        expenses.map((expense) =>
+          expense._id === id ? updatedExpense : expense
+        )
+      );
     } catch (error) {
       console.error("Error updating expense:", error);
       throw error;
@@ -96,8 +98,6 @@ export function ExpenseProvider({ children }: { children: React.ReactNode }) {
 
   const clearAllExpenses = async () => {
     try {
-      // Note: This would require a backend endpoint to delete all user expenses
-      // For now, we'll just clear the local state
       setExpenses([]);
     } catch (error) {
       console.error("Error clearing expenses:", error);

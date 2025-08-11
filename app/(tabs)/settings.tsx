@@ -24,7 +24,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
   const { expenses, clearAllExpenses } = useExpenseContext();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const currency = useCurrencyStore((state) => state.currency);
   const setCurrency = useCurrencyStore((state) => state.setCurrency);
 
@@ -109,7 +109,6 @@ export default function SettingsScreen() {
           <View style={styles.statRow}>
             <View style={styles.statInfo}>
               <Text style={styles.statLabel}>Total Amount</Text>
-              {/* <Text style={styles.statValue}>${totalAmount.toFixed(2)}</Text> */}
               <Text style={styles.statValue}>
                 {currency === "USD" ? "$" : "₱"}
                 {totalAmount.toFixed(2)}

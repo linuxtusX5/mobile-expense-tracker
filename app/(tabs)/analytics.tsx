@@ -38,7 +38,6 @@ export default function AnalyticsScreen() {
               <TrendingUp size={20} color="#3B82F6" />
               <Text style={styles.statTitle}>Total Spent</Text>
             </View>
-            {/* <Text style={styles.statAmount}>${totalExpenses.toFixed(2)}</Text> */}
             <Text style={styles.statAmount}>
               {symbol}
               {totalExpenses.toFixed(2)}
