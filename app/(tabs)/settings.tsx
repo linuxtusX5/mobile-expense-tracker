@@ -1,6 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useExpenseContext } from "@/contexts/ExpenseContext";
 import { useCurrencyStore } from "@/stores/useCurrencyStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import {
   ChevronRight,
@@ -12,8 +13,10 @@ import {
   PhilippinePeso,
   Trash2,
 } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,6 +30,7 @@ export default function SettingsScreen() {
   const { logout } = useAuth();
   const currency = useCurrencyStore((state) => state.currency);
   const setCurrency = useCurrencyStore((state) => state.setCurrency);
+  const [name, setName] = useState("");
 
   const handleCurrencyChange = (selectedCurrency: string) => {
     setCurrency(selectedCurrency);
@@ -71,6 +75,21 @@ export default function SettingsScreen() {
     0
   );
 
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setName(parsedUser.name || "");
+        }
+      } catch (err) {
+        console.error("Error loading user:", err);
+      }
+    };
+    loadUser();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -79,6 +98,17 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Profile Section */}
+        <View style={styles.section}>
+          <View style={styles.Profile}>
+            <Image
+              source={require("@/assets/Icon/profile.png")}
+              style={styles.icon}
+            />
+            <Text style={styles.name}>{name}</Text>
+          </View>
+        </View>
+
         {/* Currency Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Currency</Text>
@@ -211,6 +241,28 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  icon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    resizeMode: "cover",
+  },
+  Profile: {
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E5E7EB",
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
   pickerWrapper: {
     overflow: "hidden",
     backgroundColor: "#FFFFFF",

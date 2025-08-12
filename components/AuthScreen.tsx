@@ -1,5 +1,4 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { signInWithGoogle } from "@/services/api";
 import { useGoogleAuth } from "@/signInWithGoogle";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react-native";
 import React, { useState } from "react";
@@ -16,7 +15,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 export default function AuthScreen() {
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
@@ -71,18 +69,6 @@ export default function AuthScreen() {
   const toggleMode = () => {
     setIsLogin(!isLogin);
     setFormData({ name: "", email: "", password: "" });
-  };
-
-  const handleGoogleLogin = async () => {
-    try {
-      const user = await signInWithGoogle();
-      const token = await user.getIdToken();
-
-      // OPTIONAL: Send token to your backend
-      console.log("Firebase Google Token:", token);
-    } catch (error) {
-      console.error("Google Sign-In Error:", error);
-    }
   };
 
   return (
