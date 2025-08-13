@@ -1,10 +1,8 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { useGoogleAuth } from "@/signInWithGoogle";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react-native";
 import React, { useState } from "react";
 import {
   Alert,
-  Button,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -20,8 +18,6 @@ export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const { promptAsync, request } = useGoogleAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -166,11 +162,6 @@ export default function AuthScreen() {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.toggleButton} onPress={toggleMode}>
-              <Button
-                title="Sign in with Google"
-                disabled={!request}
-                onPress={() => promptAsync()}
-              />
               <Text style={styles.toggleButtonText}>
                 {isLogin
                   ? "Don't have an account? Sign Up"
