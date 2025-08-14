@@ -4,7 +4,7 @@
     "slug": "expense-tracking",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon/Expense Tracker Icon.png",
     "scheme": "expensetracking",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

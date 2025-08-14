@@ -51,7 +51,7 @@ export default function AnalyticsScreen() {
             </View>
             <Text style={styles.statAmount}>
               {symbol}
-              {totalExpenses.toFixed(2)}
+              {getMonthlyTotal().toFixed(2)}
             </Text>
           </View>
         </View>
