@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
   Dimensions,
@@ -67,13 +68,14 @@ const Slide: React.FC<{ item: SlideItem }> = ({ item }) => {
   );
 };
 
-type OnboardingScreenProps = {
-  onDone: () => void;
-};
-
-function OnboardingScreen({ onDone }: OnboardingScreenProps) {
+function OnboardingScreen() {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const ref = useRef<FlatList<SlideItem>>(null);
+  const router = useRouter();
+
+  const handleDone = () => {
+    router.replace("/(tabs)");
+  };
 
   const updateCurrentSlideIndex = (
     e: NativeSyntheticEvent<NativeScrollEvent>
@@ -126,7 +128,7 @@ function OnboardingScreen({ onDone }: OnboardingScreenProps) {
                 zIndex: 999,
                 alignItems: "center",
               }}
-              onPress={onDone}
+              onPress={handleDone}
             >
               <Text
                 style={{
