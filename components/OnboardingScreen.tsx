@@ -53,6 +53,9 @@ const slides: SlideItem[] = [
   },
 ];
 
+type OnboardingScreenProps = {
+  onDone: () => void; // 👈 this fixes the "any" type issue
+};
 const Slide: React.FC<{ item: SlideItem }> = ({ item }) => {
   return (
     <View style={{ alignItems: "center", width }}>
@@ -68,13 +71,16 @@ const Slide: React.FC<{ item: SlideItem }> = ({ item }) => {
   );
 };
 
-function OnboardingScreen() {
+function OnboardingScreen({ onDone }: OnboardingScreenProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const ref = useRef<FlatList<SlideItem>>(null);
   const router = useRouter();
 
-  const handleDone = () => {
-    router.replace("/(tabs)");
+  const handleStart = async () => {
+    if (onDone) {
+      await onDone(); // saves "hasLaunched"
+    }
+    router.replace("/(tabs)"); // 👈 change to your actual main route
   };
 
   const updateCurrentSlideIndex = (
@@ -128,7 +134,7 @@ function OnboardingScreen() {
                 zIndex: 999,
                 alignItems: "center",
               }}
-              onPress={handleDone}
+              onPress={handleStart}
             >
               <Text
                 style={{
