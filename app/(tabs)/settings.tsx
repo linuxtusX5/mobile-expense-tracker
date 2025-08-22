@@ -32,7 +32,7 @@ export default function SettingsScreen() {
   const setCurrency = useCurrencyStore((state) => state.setCurrency);
   const [name, setName] = useState("");
 
-  const handleCurrencyChange = (selectedCurrency: string) => {
+  const handleCurrencyChange = (selectedCurrency: "USD" | "PHP") => {
     setCurrency(selectedCurrency);
   };
 

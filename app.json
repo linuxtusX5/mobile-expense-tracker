@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Expense Tracking",
+    "name": "Expense Tracker",
     "slug": "expense-tracking",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,6 +8,7 @@
     "scheme": "expensetracking",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "entryPoint": "./index.js",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.salvatusdev.expensetracking"
@@ -31,7 +32,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash.png",
+          "image": "./assets/Icon/Expense_Tracker_Icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

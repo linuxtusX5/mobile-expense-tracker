@@ -54,7 +54,7 @@ const slides: SlideItem[] = [
 ];
 
 type OnboardingScreenProps = {
-  onDone: () => void; // 👈 this fixes the "any" type issue
+  onDone: () => void;
 };
 const Slide: React.FC<{ item: SlideItem }> = ({ item }) => {
   return (
@@ -78,9 +78,9 @@ function OnboardingScreen({ onDone }: OnboardingScreenProps) {
 
   const handleStart = async () => {
     if (onDone) {
-      await onDone(); // saves "hasLaunched"
+      await onDone();
     }
-    router.replace("/(tabs)"); // 👈 change to your actual main route
+    router.replace("/(tabs)");
   };
 
   const updateCurrentSlideIndex = (
